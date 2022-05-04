@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine.UI;
 using UnityEngine;
@@ -7,15 +5,10 @@ using UnityEngine;
 [CustomEditor(typeof(UIUpdater))]
 public class Inspector_UIUpdater : Editor
 {
-    float thumbnailWidth = 70;
-    float thumbnailHeight = 70;
-    float labelWidth = 150f;
-
     SerializedProperty allSceneButtons;
     SerializedProperty hoverSprite;
     SerializedProperty clickedSprite;
     SerializedProperty normalSprite;
-    SerializedProperty eventProp;
 
     private void OnEnable()
     {
@@ -23,7 +16,6 @@ public class Inspector_UIUpdater : Editor
         hoverSprite = serializedObject.FindProperty("HoverSprite");
         clickedSprite = serializedObject.FindProperty("ClickedSprite");
         normalSprite = serializedObject.FindProperty("NormalSprite");
-        eventProp = serializedObject.FindProperty("Event");
     }
 
     public override void OnInspectorGUI()
@@ -47,14 +39,9 @@ public class Inspector_UIUpdater : Editor
         EditorGUILayout.PropertyField(allSceneButtons, new GUIContent("All Scene Buttons"), true);
         GUILayout.Space(20f);
 
-        GUILayout.Label("Generic OnClick Functions:", EditorStyles.boldLabel);
-        GUILayout.Space(20f);
-        EditorGUILayout.PropertyField(eventProp, new GUIContent("Event"), true);
-        GUILayout.Space(20f);
-
         GUILayout.BeginHorizontal();
 
-        if (GUILayout.Button("Update Button UI"))
+        if (GUILayout.Button("Find All Buttons"))
         {
             uIUpdater.AllSceneButtons.Clear();
 
@@ -67,18 +54,26 @@ public class Inspector_UIUpdater : Editor
                 uIUpdater.AllSceneButtons.Add(button);
             }
 
-            uIUpdater.UpdateButtonSprites();
-
-            Debug.Log("Buttons Found");
+            Debug.Log(uIUpdater.AllSceneButtons.Count + " Buttons Found");
         }
 
-        if (GUILayout.Button("Apply OnClick Functions"))
+        if (GUILayout.Button("Apply Sprites"))
         {
-            uIUpdater.ApplyGenericOnClickFunction();
+            uIUpdater.UpdateButtonSprites();
+
+            Debug.Log("All Button Sprites Updated");
+        }
+
+        if (GUILayout.Button("Apply Event Triggers"))
+        {
+            uIUpdater.ApplyEventTriggersToButtons();
+
+            Debug.Log("All Events Applied to Buttons");
+
+            Repaint();
         }
 
         GUILayout.EndHorizontal();
-
 
         serializedObject.ApplyModifiedProperties();
     }

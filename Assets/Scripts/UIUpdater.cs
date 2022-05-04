@@ -1,10 +1,6 @@
-using System.Collections;
-using System.Reflection;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
 public class UIUpdater : MonoBehaviour
@@ -14,8 +10,6 @@ public class UIUpdater : MonoBehaviour
     public Sprite NormalSprite;
     public Sprite HoverSprite;
     public Sprite ClickedSprite;
-    public UnityEvent Event;
-
 
     public void UpdateButtonSprites()
     {
@@ -43,22 +37,23 @@ public class UIUpdater : MonoBehaviour
         }
     }
 
-    public void ApplyGenericOnClickFunction()
+    public void ApplyEventTriggersToButtons()
     {
         for (int i = 0; i < AllSceneButtons.Count; i++)
         {
-            EventTrigger.Entry entry = new EventTrigger.Entry();
-            entry.eventID = EventTriggerType.PointerClick;
-            entry.callback = new EventTrigger.TriggerEvent();
-            //entry.callback.AddListener(TestCall());
+            var buttonEventTrigger = AllSceneButtons[i].GetComponent<EventTrigger>();
 
-            AllSceneButtons[i].gameObject.AddComponent<EventTrigger>().triggers.Add(entry);
+            if (buttonEventTrigger)
+            {
+                DestroyImmediate(buttonEventTrigger);
+            }
+
+            var eventTrigger = GetComponent<EventTrigger>();
+
+            if (eventTrigger)
+            {
+                AllSceneButtons[i].gameObject.AddComponent(eventTrigger);
+            }
         }
     }
-
-    public void TestCall()
-    {
-        Debug.Log("TestCall");
-    }
-
 }
